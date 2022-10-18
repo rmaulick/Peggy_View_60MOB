@@ -1,0 +1,263 @@
+NODE,PARENT,NODE_TYPE,FORMULA,NODE_ID,PARENT_ID,CHILD_INDEX,PARENT_INDEX,INDEX_NUM,PARENT_INDEX_NUM,FULL_SQL
+BLENDED_CAPITAL_RATE_FINANCE,ECONOMIC_CAPITAL_DLRS_PER_ORIG,raw,,1.2.3.2.2,1.2.3.2,index16,index11,16,11,
+OS_DLRS_PER_ACTV,OS_DLRS_PER_ORIG,raw,,1.2.3.2.1.2,1.2.3.2.1,index26,index15,26,15,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,OS_DLRS_PER_ORIG,raw,,1.2.3.2.1.1,1.2.3.2.1,index25,index15,25,15,
+OS_DLRS_PER_ORIG,ECONOMIC_CAPITAL_DLRS_PER_ORIG,calculated,OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.2.3.2.1,1.2.3.2,index15,index11,15,11,"select *, OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OS_DLRS_PER_ORIG from data"
+ECONOMIC_CAPITAL_DLRS_PER_ORIG,CHANGE_IN_EC_DLRS_PER_ORIG,calculated,Blended_Capital_Rate_Finance * OS_DLRS_per_ORIG,1.2.3.2,1.2.3,index11,index6,11,6,"select *, Blended_Capital_Rate_Finance * OS_DLRS_per_ORIG as ECONOMIC_CAPITAL_DLRS_PER_ORIG from data"
+L_ECONOMIC_CAPITAL_DLRS_PER_ORIG,CHANGE_IN_EC_DLRS_PER_ORIG,raw,,1.2.3.1,1.2.3,index10,index6,10,6,
+CHANGE_IN_EC_DLRS_PER_ORIG,DISCOUNTED_EC_DLRS_PER_ORIG,calculated,L_Economic_Capital_DLRS_per_ORIG - Economic_Capital_DLRS_per_ORIG,1.2.3,1.2,index6,index3,6,3,"select *, L_Economic_Capital_DLRS_per_ORIG - Economic_Capital_DLRS_per_ORIG as CHANGE_IN_EC_DLRS_PER_ORIG from data"
+COST_OF_EQUITY,DISCOUNTED_EC_DLRS_PER_ORIG,raw,,1.2.2,1.2,index5,index3,5,3,
+MOB,DISCOUNTED_EC_DLRS_PER_ORIG,raw,,1.2.1,1.2,index4,index3,4,3,
+DISCOUNTED_EC_DLRS_PER_ORIG,EV_DLRS_PER_ORIG,calculated,"Change_in_EC_DLRS_per_ORIG / power((1+ Cost_of_Equity / 12), MOB)",1.2,1,index3,index1,3,1,"select *, Change_in_EC_DLRS_per_ORIG / power((1+ Cost_of_Equity / 12), MOB) as DISCOUNTED_EC_DLRS_PER_ORIG from data"
+ACQUISITION_COST,ACQUISITION_COST_DLRS_PER_ORIG,raw,,1.1.3.3.3.5.3,1.1.3.3.3.5,index47,index24,47,24,
+INTERNAL_SALES_COST,ACQUISITION_COST_DLRS_PER_ORIG,raw,,1.1.3.3.3.5.2,1.1.3.3.3.5,index46,index24,46,24,
+MOB,ACQUISITION_COST_DLRS_PER_ORIG,raw,,1.1.3.3.3.5.1,1.1.3.3.3.5,index45,index24,45,24,
+ACQUISITION_COST_DLRS_PER_ORIG,TOTAL_OPEX,calculated,"CASE
+WHEN MOB = 1 THEN -1 * (Internal_Sales_Cost + Acquisition_Cost)
+ELSE  0 
+END",1.1.3.3.3.5,1.1.3.3.3,index24,index19,24,19,"select *, CASE
+WHEN MOB = 1 THEN -1 * (Internal_Sales_Cost + Acquisition_Cost)
+ELSE  0 
+END as ACQUISITION_COST_DLRS_PER_ORIG from data"
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.3.4.2.2,1.1.3.3.3.4.2,index158,index53,158,53,
+SALES_DLRS_PER_ACTV,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.3.4.2.1,1.1.3.3.3.4.2,index66,index53,66,53,
+SALES_DLRS_PER_ORIG,FRAUD_DLRS_PER_ORIG,calculated,Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.3.4.2,1.1.3.3.3.4,index53,index23,53,23,"select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data"
+FRAUD_RATE,FRAUD_DLRS_PER_ORIG,raw,,1.1.3.3.3.4.1,1.1.3.3.3.4,index52,index23,52,23,
+FRAUD_DLRS_PER_ORIG,TOTAL_OPEX,calculated,#NAME?,1.1.3.3.3.4,1.1.3.3.3,index23,index19,23,19,"select *, -1 * Fraud_Rate * Sales_DLRS_per_ORIG as FRAUD_DLRS_PER_ORIG from data"
+ACCOUNT_SETUP,ACCOUNT_SETUP_DLRS_PER_ORIG,raw,,1.1.3.3.3.3.2,1.1.3.3.3.3,index49,index22,49,22,
+MOB,ACCOUNT_SETUP_DLRS_PER_ORIG,raw,,1.1.3.3.3.3.1,1.1.3.3.3.3,index48,index22,48,22,
+ACCOUNT_SETUP_DLRS_PER_ORIG,TOTAL_OPEX,calculated,"CASE
+WHEN MOB = 1 THEN Account_Setup
+ELSE  0 
+END",1.1.3.3.3.3,1.1.3.3.3,index22,index19,22,19,"select *, CASE
+WHEN MOB = 1 THEN Account_Setup
+ELSE  0 
+END as ACCOUNT_SETUP_DLRS_PER_ORIG from data"
+OPERATING_EXP_PER_ACTIVE_BLENDED,MARGINAL_OPEX_DLRS_PER_ORIG,calculated,Opex_prime * Prime_Account_Pct + Opex_middle * Middle_Account_Pct,1.1.3.3.3.2.1,1.1.3.3.3.2,index60,index21,60,21,"select *, Opex_prime * Prime_Account_Pct + Opex_middle * Middle_Account_Pct as OPERATING_EXP_PER_ACTIVE_BLENDED from data"
+MARGINAL_OPEX_DLRS_PER_ORIG,TOTAL_OPEX,calculated,Active_Accounts_PCT_per_ORIG * Operating_Exp_Per_Active_Blended,1.1.3.3.3.2,1.1.3.3.3,index21,index19,21,19,"select *, Active_Accounts_PCT_per_ORIG * Operating_Exp_Per_Active_Blended as MARGINAL_OPEX_DLRS_PER_ORIG from data"
+L_SECOND_EVER_PCT_PER_ACTV,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.11,1.1.3.3.3.1,index44,index20,44,20,
+L_FIRST_EVER_PCT_PER_ACTV,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.10,1.1.3.3.3.1,index43,index20,43,20,
+AEP_SECOND_ACTIVE_MIDDLE,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.9,1.1.3.3.3.1,index42,index20,42,20,
+AEP_SECOND_ACTIVE_PRIME,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.8,1.1.3.3.3.1,index41,index20,41,20,
+MIDDLE_ACCOUNT_PCT,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.7,1.1.3.3.3.1,index40,index20,40,20,
+AEP_FIRST_ACTIVE_MIDDLE,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.6,1.1.3.3.3.1,index39,index20,39,20,
+PRIME_ACCOUNT_PCT,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.5,1.1.3.3.3.1,index38,index20,38,20,
+AEP_FIRST_ACTIVE_PRIME,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.4,1.1.3.3.3.1,index37,index20,37,20,
+SECOND_EVER_PCT_PER_ACTV,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.3,1.1.3.3.3.1,index36,index20,36,20,
+FIRST_EVER_PCT_PER_ACTV,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.2,1.1.3.3.3.1,index35,index20,35,20,
+MOB,REVSHARE_AEP_DLRS_PER_ORIG,raw,,1.1.3.3.3.1.1,1.1.3.3.3.1,index34,index20,34,20,
+REVSHARE_AEP_DLRS_PER_ORIG,TOTAL_OPEX,calculated,"CASE
+WHEN MOB = 1 THEN First_Ever_PCT_per_ACTV * (AEP_First_Active_Prime) * Prime_Account_Pct + First_Ever_PCT_per_ACTV * (AEP_First_Active_Middle) * Middle_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Prime * Prime_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Middle * Middle_Account_Pct
+ELSE
+(First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Prime) * Prime_Account_Pct + (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Middle) * Middle_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) * AEP_Second_Active_Prime * Prime_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) *  AEP_Second_Active_Middle * Middle_Account_Pct
+END",1.1.3.3.3.1,1.1.3.3.3,index20,index19,20,19,"select *, CASE
+WHEN MOB = 1 THEN First_Ever_PCT_per_ACTV * (AEP_First_Active_Prime) * Prime_Account_Pct + First_Ever_PCT_per_ACTV * (AEP_First_Active_Middle) * Middle_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Prime * Prime_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Middle * Middle_Account_Pct
+ELSE
+(First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Prime) * Prime_Account_Pct + (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Middle) * Middle_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) * AEP_Second_Active_Prime * Prime_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) *  AEP_Second_Active_Middle * Middle_Account_Pct
+END as REVSHARE_AEP_DLRS_PER_ORIG from data"
+TOTAL_OPEX,PBT_DLRS_PER_ORIG,calculated,RevShare_AEP_DLRS_per_ORIG + Marginal_Opex_DLRS_per_ORIG + Account_Setup_DLRS_per_ORIG + Fraud_DLRS_per_ORIG + Acquisition_Cost_DLRS_per_ORIG,1.1.3.3.3,1.1.3.3,index19,index14,19,14,"select *, RevShare_AEP_DLRS_per_ORIG + Marginal_Opex_DLRS_per_ORIG + Account_Setup_DLRS_per_ORIG + Fraud_DLRS_per_ORIG + Acquisition_Cost_DLRS_per_ORIG as TOTAL_OPEX from data"
+L_LLR,CHANGE_IN_LLR_DLRS_PER_ORIG,raw,,1.1.3.3.2.2.3,1.1.3.3.2.2,index33,index30,33,30,
+LLR,CHANGE_IN_LLR_DLRS_PER_ORIG,raw,,1.1.3.3.2.2.2,1.1.3.3.2.2,index32,index30,32,30,
+MOB,CHANGE_IN_LLR_DLRS_PER_ORIG,raw,,1.1.3.3.2.2.1,1.1.3.3.2.2,index31,index30,31,30,
+CHANGE_IN_LLR_DLRS_PER_ORIG,TOTAL_RISK,calculated,"CASE
+WHEN MOB == 1 THEN LLR
+ELSE
+LLR - L_LLR
+END",1.1.3.3.2.2,1.1.3.3.2,index30,index18,30,18,"select *, CASE
+WHEN MOB == 1 THEN LLR
+ELSE
+LLR - L_LLR
+END as CHANGE_IN_LLR_DLRS_PER_ORIG from data"
+MOB,WRITE_OFF,raw,,1.1.3.3.2.1.1,1.1.3.3.2.1,index59,index29,59,29,
+WRITE_OFF,TOTAL_RISK,raw,,1.1.3.3.2.1,1.1.3.3.2,index29,index18,29,18,
+TOTAL_RISK,PBT_DLRS_PER_ORIG,calculated,Write_off + Change_in_LLR_DLRS_per_ORIG,1.1.3.3.2,1.1.3.3,index18,index14,18,14,"select *, Write_off + Change_in_LLR_DLRS_per_ORIG as TOTAL_RISK from data"
+REVERSED_ANNUAL_FEES_DLRS_PER_AC,NET_ANNUAL_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.6.3,1.1.3.3.1.2.5.6,index119,index73,119,73,
+GROSS_ANNUAL_FEES_DLRS_PER_ACTV,NET_ANNUAL_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.6.2,1.1.3.3.1.2.5.6,index118,index73,118,73,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,NET_ANNUAL_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.6.1,1.1.3.3.1.2.5.6,index117,index73,117,73,
+NET_ANNUAL_FEES_DLRS_PER_ORIG,FEE_INCOME,calculated,(Gross_Annual_Fees_DLRS_per_ACTV+ Reversed_Annual_Fees_DLRS_per_AC)*Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.5.6,1.1.3.3.1.2.5,index73,index58,73,58,"select *, (Gross_Annual_Fees_DLRS_per_ACTV+ Reversed_Annual_Fees_DLRS_per_AC)*Active_Accounts_PCT_per_ORIG as NET_ANNUAL_FEES_DLRS_PER_ORIG from data"
+OTHER_FEES_DLRS_PER_ACTV,OTHER_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.5.2,1.1.3.3.1.2.5.5,index98,index72,98,72,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,OTHER_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.5.1,1.1.3.3.1.2.5.5,index97,index72,97,72,
+OTHER_FEES_DLRS_PER_ORIG,FEE_INCOME,calculated,Other_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.5.5,1.1.3.3.1.2.5,index72,index58,72,58,"select *, Other_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OTHER_FEES_DLRS_PER_ORIG from data"
+CA_FEE_DLRS_PER_ACTV,CASH_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.4.4,1.1.3.3.1.2.5.4,index128,index71,128,71,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,CASH_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.4.3,1.1.3.3.1.2.5.4,index127,index71,127,71,
+CA_FEE_DLRS_PER_ACTV,CASH_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.4.2,1.1.3.3.1.2.5.4,index126,index71,126,71,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,CASH_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.4.1,1.1.3.3.1.2.5.4,index125,index71,125,71,
+CASH_FEES_DLRS_PER_ORIG,FEE_INCOME,calculated,Active_Accounts_PCT_per_ORIG * Ca_Fee_DLRS_per_ACTV,1.1.3.3.1.2.5.4,1.1.3.3.1.2.5,index71,index58,71,58,"select *, Active_Accounts_PCT_per_ORIG * Ca_Fee_DLRS_per_ACTV as CASH_FEES_DLRS_PER_ORIG from data"
+FC_FEE_DLRS_PER_ACTV,FOREIGN_CURRENCY_FEE,raw,,1.1.3.3.1.2.5.3.4,1.1.3.3.1.2.5.3,index102,index70,102,70,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,FOREIGN_CURRENCY_FEE,raw,,1.1.3.3.1.2.5.3.3,1.1.3.3.1.2.5.3,index101,index70,101,70,
+FC_FEE_DLRS_PER_ACTV,FOREIGN_CURRENCY_FEE,raw,,1.1.3.3.1.2.5.3.2,1.1.3.3.1.2.5.3,index100,index70,100,70,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,FOREIGN_CURRENCY_FEE,raw,,1.1.3.3.1.2.5.3.1,1.1.3.3.1.2.5.3,index99,index70,99,70,
+FOREIGN_CURRENCY_FEE,FEE_INCOME,calculated,Active_Accounts_PCT_per_ORIG * Fc_Fee_DLRS_per_ACTV,1.1.3.3.1.2.5.3,1.1.3.3.1.2.5,index70,index58,70,58,"select *, Active_Accounts_PCT_per_ORIG * Fc_Fee_DLRS_per_ACTV as FOREIGN_CURRENCY_FEE from data"
+CHECK_FEES_DLRS_PER_ACTV,CHECK_BT_FEE_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.2.2,1.1.3.3.1.2.5.2,index96,index69,96,69,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,CHECK_BT_FEE_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.2.1,1.1.3.3.1.2.5.2,index95,index69,95,69,
+CHECK_BT_FEE_DLRS_PER_ORIG,FEE_INCOME,calculated,Check_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.5.2,1.1.3.3.1.2.5,index69,index58,69,58,"select *, Check_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as CHECK_BT_FEE_DLRS_PER_ORIG from data"
+LATE_FEES,LATE_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.1.3,1.1.3.3.1.2.5.1,index131,index68,131,68,
+LATE_FEES_INCIDENT_PCT_PER_ACTV,LATE_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.1.2,1.1.3.3.1.2.5.1,index130,index68,130,68,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,LATE_FEES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.5.1.1,1.1.3.3.1.2.5.1,index129,index68,129,68,
+LATE_FEES_DLRS_PER_ORIG,FEE_INCOME,calculated,Late_Fees_Incident_PCT_per_ACTV * Active_Accounts_PCT_per_ORIG * Late_Fees,1.1.3.3.1.2.5.1,1.1.3.3.1.2.5,index68,index58,68,58,"select *, Late_Fees_Incident_PCT_per_ACTV * Active_Accounts_PCT_per_ORIG * Late_Fees as LATE_FEES_DLRS_PER_ORIG from data"
+FEE_INCOME,NET_NON_INTEREST_INCOME,calculated,Late_Fees_DLRS_per_ORIG + Check_BT_Fee_DLRS_per_ORIG + Foreign_Currency_Fee + Cash_Fees_DLRS_per_ORIG + Other_Fees_DLRS_per_ORIG + Net_Annual_Fees_DLRS_per_ORIG,1.1.3.3.1.2.5,1.1.3.3.1.2,index58,index28,58,28,"select *, Late_Fees_DLRS_per_ORIG + Check_BT_Fee_DLRS_per_ORIG + Foreign_Currency_Fee + Cash_Fees_DLRS_per_ORIG + Other_Fees_DLRS_per_ORIG + Net_Annual_Fees_DLRS_per_ORIG as FEE_INCOME from data"
+L_FIRST_EVER_PCT_PER_ACTV,BONUS_REVENUE_SHARING,raw,,1.1.3.3.1.2.4.6,1.1.3.3.1.2.4,index81,index57,81,57,
+BT_BONUS_POINT_COST,BONUS_REVENUE_SHARING,raw,,1.1.3.3.1.2.4.5,1.1.3.3.1.2.4,index80,index57,80,57,
+BONUS_POINT_COST,BONUS_REVENUE_SHARING,raw,,1.1.3.3.1.2.4.4,1.1.3.3.1.2.4,index79,index57,79,57,
+SPEND_THRESHOLD_FACTOR,BONUS_REVENUE_SHARING,raw,,1.1.3.3.1.2.4.3,1.1.3.3.1.2.4,index78,index57,78,57,
+BLENDED_BONUS_AMOUNT,BONUS_REVENUE_SHARING,raw,,1.1.3.3.1.2.4.2,1.1.3.3.1.2.4,index77,index57,77,57,
+FIRST_EVER_PCT_PER_ACTV,BONUS_REVENUE_SHARING,raw,,1.1.3.3.1.2.4.1,1.1.3.3.1.2.4,index76,index57,76,57,
+BONUS_REVENUE_SHARING,NET_NON_INTEREST_INCOME,calculated,"CASE
+WHEN MOB = 1 then Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * First_Ever_PCT_per_ACTV + BT_Bonus_Point_Cost
+WHEN First_Ever_PCT_per_ACTV > L_First_Ever_PCT_per_ACTV THEN Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV ) + BT_Bonus_Point_Cost
+ELSE 0
+END",1.1.3.3.1.2.4,1.1.3.3.1.2,index57,index28,57,28,"select *, CASE
+WHEN MOB = 1 then Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * First_Ever_PCT_per_ACTV + BT_Bonus_Point_Cost
+WHEN First_Ever_PCT_per_ACTV > L_First_Ever_PCT_per_ACTV THEN Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV ) + BT_Bonus_Point_Cost
+ELSE 0
+END as BONUS_REVENUE_SHARING from data"
+DOLLARS_PER_RENEW,REVSHARE_RENEW_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.3.4,1.1.3.3.1.2.3.3,index116,index63,116,63,
+DOLLARNEW1,REVSHARE_RENEW_DLRS_PER_ORIG,raw,"IT SEEMS TO BE BLANK FROM THE CODE, ADD A BLANK COLUMN IN THE DATA",1.1.3.3.1.2.3.3.3,1.1.3.3.1.2.3.3,index115,index63,115,63,
+DOLLARS_PER_NEW,REVSHARE_RENEW_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.3.2,1.1.3.3.1.2.3.3,index114,index63,114,63,
+MOB,REVSHARE_RENEW_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.3.1,1.1.3.3.1.2.3.3,index113,index63,113,63,
+REVSHARE_RENEW_DLRS_PER_ORIG,SPEND_REV_SHARE_PARTNER,calculated,"CASE
+WHEN MOB = 1 THEN -1 * Dollars_per_new
+ELSE -1 * dollarnew1 * Dollars_per_renew
+END",1.1.3.3.1.2.3.3,1.1.3.3.1.2.3,index63,index56,63,56,"select *, CASE
+WHEN MOB = 1 THEN -1 * Dollars_per_new
+ELSE -1 * dollarnew1 * Dollars_per_renew
+END as REVSHARE_RENEW_DLRS_PER_ORIG from data"
+EXCISE_TAX,EXCISE_PER_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.2.2,1.1.3.3.1.2.3.2,index124,index62,124,62,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.2.1.2,1.1.3.3.1.2.3.2.1,index150,index123,150,123,
+SALES_DLRS_PER_ACTV,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.2.1.1,1.1.3.3.1.2.3.2.1,index149,index123,149,123,
+SALES_DLRS_PER_ORIG,EXCISE_PER_DLRS_PER_ORIG,calculated,Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.3.2.1,1.1.3.3.1.2.3.2,index123,index62,123,62,"select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data"
+EXCISE_PER_DLRS_PER_ORIG,SPEND_REV_SHARE_PARTNER,calculated,Sales_DLRS_per_ORIG * (-1) * Excise_Tax,1.1.3.3.1.2.3.2,1.1.3.3.1.2.3,index62,index56,62,56,"select *, Sales_DLRS_per_ORIG * (-1) * Excise_Tax as EXCISE_PER_DLRS_PER_ORIG from data"
+REV_SHARE_OFF_NOFEE,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.8,1.1.3.3.1.2.3.1,index139,index61,139,61,
+NO_FEE_SALES_PCT,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.7,1.1.3.3.1.2.3.1,index138,index61,138,61,
+REV_SHARE_OFF_FEE,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.6,1.1.3.3.1.2.3.1,index137,index61,137,61,
+REV_SHARE_ON_NOFEE,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.5,1.1.3.3.1.2.3.1,index136,index61,136,61,
+FEE_SALES_PCT,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.4,1.1.3.3.1.2.3.1,index135,index61,135,61,
+REV_SHARE_ON_FEE,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.3,1.1.3.3.1.2.3.1,index134,index61,134,61,
+ON_SPEND_PCT_PER_ORIG,REVSHARE_BP_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.2,1.1.3.3.1.2.3.1,index133,index61,133,61,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.1.2,1.1.3.3.1.2.3.1.1,index148,index132,148,132,
+SALES_DLRS_PER_ACTV,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.3.1.1.1,1.1.3.3.1.2.3.1.1,index147,index132,147,132,
+SALES_DLRS_PER_ORIG,REVSHARE_BP_DLRS_PER_ORIG,calculated,Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.3.1.1,1.1.3.3.1.2.3.1,index132,index61,132,61,"select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data"
+REVSHARE_BP_DLRS_PER_ORIG,SPEND_REV_SHARE_PARTNER,calculated,"(Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_nofee * No_Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1-On_Spend_PCT_per_ORIG) * rev_share_off_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1- On_Spend_PCT_per_ORIG) * rev_share_off_nofee * No_Fee_Sales_Pct) * (-1)",1.1.3.3.1.2.3.1,1.1.3.3.1.2.3,index61,index56,61,56,"select *, (Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_nofee * No_Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1-On_Spend_PCT_per_ORIG) * rev_share_off_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1- On_Spend_PCT_per_ORIG) * rev_share_off_nofee * No_Fee_Sales_Pct) * (-1) as REVSHARE_BP_DLRS_PER_ORIG from data"
+SPEND_REV_SHARE_PARTNER,NET_NON_INTEREST_INCOME,calculated,RevShare_BP_DLRS_per_ORIG + Excise_per_DLRS_per_ORIG + RevShare_Renew_DLRS_per_ORIG,1.1.3.3.1.2.3,1.1.3.3.1.2,index56,index28,56,28,"select *, RevShare_BP_DLRS_per_ORIG + Excise_per_DLRS_per_ORIG + RevShare_Renew_DLRS_per_ORIG as SPEND_REV_SHARE_PARTNER from data"
+COST_PER_POINT,REWARDS_EXPENSE_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.2.2,1.1.3.3.1.2.2,index75,index55,75,55,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.2.1.2,1.1.3.3.1.2.2.1,index106,index74,106,74,
+SALES_DLRS_PER_ACTV,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.2.1.1,1.1.3.3.1.2.2.1,index155,index74,155,74,
+SALES_DLRS_PER_ORIG,REWARDS_EXPENSE_DLRS_PER_ORIG,calculated,Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.2.1,1.1.3.3.1.2.2,index74,index55,74,55,"select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data"
+REWARDS_EXPENSE_DLRS_PER_ORIG,NET_NON_INTEREST_INCOME,calculated,(-1) * (Sales_DLRS_per_ORIG * Cost_Per_Point),1.1.3.3.1.2.2,1.1.3.3.1.2,index55,index28,55,28,"select *, (-1) * (Sales_DLRS_per_ORIG * Cost_Per_Point) as REWARDS_EXPENSE_DLRS_PER_ORIG from data"
+MDR,MDR_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.1.7.3,1.1.3.3.1.2.1.7,index122,index88,122,88,
+ON_SPEND_PCT_PER_ORIG,MDR_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.1.7.2,1.1.3.3.1.2.1.7,index121,index88,121,88,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.1.7.1.2,1.1.3.3.1.2.1.7.1,index152,index120,152,120,
+SALES_DLRS_PER_ACTV,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.1.7.1.1,1.1.3.3.1.2.1.7.1,index151,index120,151,120,
+SALES_DLRS_PER_ORIG,MDR_DLRS_PER_ORIG,calculated,Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.1.7.1,1.1.3.3.1.2.1.7,index120,index88,120,88,"select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data"
+MDR_DLRS_PER_ORIG,INTERCHANGE_INCOME,calculated,MDR * Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG,1.1.3.3.1.2.1.7,1.1.3.3.1.2.1,index88,index54,88,54,"select *, MDR * Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG as MDR_DLRS_PER_ORIG from data"
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.1.6.2,1.1.3.3.1.2.1.6,index154,index87,154,87,
+SALES_DLRS_PER_ACTV,SALES_DLRS_PER_ORIG,raw,,1.1.3.3.1.2.1.6.1,1.1.3.3.1.2.1.6,index103,index87,103,87,
+SALES_DLRS_PER_ORIG,INTERCHANGE_INCOME,calculated,Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.2.1.6,1.1.3.3.1.2.1,index87,index54,87,54,"select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data"
+ON_SPEND_PCT_PER_ORIG,INTERCHANGE_OFF_SPEND,raw,,1.1.3.3.1.2.1.5.2,1.1.3.3.1.2.1.5,index112,index86,112,86,
+INTERCHANGE_RELIEF_FLAG,INTERCHANGE_OFF_SPEND,raw,,1.1.3.3.1.2.1.5.1,1.1.3.3.1.2.1.5,index111,index86,111,86,
+INTERCHANGE_OFF_SPEND,INTERCHANGE_INCOME,calculated,"case
+when Interchange_Relief_Flag = 1 then 1 - On_Spend_PCT_per_ORIG
+else 1
+END",1.1.3.3.1.2.1.5,1.1.3.3.1.2.1,index86,index54,86,54,"select *, case
+when Interchange_Relief_Flag = 1 then 1 - On_Spend_PCT_per_ORIG
+else 1
+END as INTERCHANGE_OFF_SPEND from data"
+NET_INTERCHANGE_NON_WORLD,INTERCHANGE_INCOME,raw,,1.1.3.3.1.2.1.4,1.1.3.3.1.2.1,index85,index54,85,54,
+PCT_OF_SALES_NON_WORLD,INTERCHANGE_INCOME,raw,,1.1.3.3.1.2.1.3,1.1.3.3.1.2.1,index84,index54,84,54,
+NET_INTERCHANGE_WORLD,INTERCHANGE_INCOME,raw,,1.1.3.3.1.2.1.2,1.1.3.3.1.2.1,index83,index54,83,54,
+PCT_OF_SALES_WORLD,INTERCHANGE_INCOME,raw,,1.1.3.3.1.2.1.1,1.1.3.3.1.2.1,index82,index54,82,54,
+INTERCHANGE_INCOME,NET_NON_INTEREST_INCOME,calculated,(Pct_of_Sales_World * Net_Interchange_World + Pct_of_Sales_Non_World * Net_Interchange_Non_World) * Sales_DLRS_per_ORIG * Interchange_off_spend + MDR_DLRS_per_ORIG,1.1.3.3.1.2.1,1.1.3.3.1.2,index54,index28,54,28,"select *, (Pct_of_Sales_World * Net_Interchange_World + Pct_of_Sales_Non_World * Net_Interchange_Non_World) * Sales_DLRS_per_ORIG * Interchange_off_spend + MDR_DLRS_per_ORIG as INTERCHANGE_INCOME from data"
+NET_NON_INTEREST_INCOME,TOTAL_INCOME,calculated,interchange_income + Rewards_Expense_DLRS_per_ORIG + Spend_Rev_Share_Partner + Bonus_Revenue_Sharing + Fee_Income,1.1.3.3.1.2,1.1.3.3.1,index28,index17,28,17,"select *, interchange_income + Rewards_Expense_DLRS_per_ORIG + Spend_Rev_Share_Partner + Bonus_Revenue_Sharing + Fee_Income as NET_NON_INTEREST_INCOME from data"
+BT_FEE_DLRS_PER_ACTV,BT_FEE_INCOME_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.2.2,1.1.3.3.1.1.2,index65,index51,65,51,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,BT_FEE_INCOME_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.2.1,1.1.3.3.1.1.2,index64,index51,64,51,
+BT_FEE_INCOME_DLRS_PER_ORIG,NET_INTEREST_INCOME,calculated,Active_Accounts_PCT_per_ORIG * BT_Fee_DLRS_per_ACTV,1.1.3.3.1.1.2,1.1.3.3.1.1,index51,index27,51,27,"select *, Active_Accounts_PCT_per_ORIG * BT_Fee_DLRS_per_ACTV as BT_FEE_INCOME_DLRS_PER_ORIG from data"
+TRANSACTOR_0PCT_NEW_RATE,COF_RATE_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.3.2.3,1.1.3.3.1.1.1.3.2,index146,index110,146,110,
+REVOLVER_FUNDING_CURVE_RATE,COF_RATE_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.3.2.2,1.1.3.3.1.1.1.3.2,index145,index110,145,110,
+REVOLVE_RATE_PCT_PER_ORIG,COF_RATE_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.3.2.1,1.1.3.3.1.1.1.3.2,index144,index110,144,110,
+COF_RATE_PCT_PER_ORIG,NET_COST_OF_FUNDS_DLRS_PER_ORIG,calculated,Revolver_Funding_Curve_Rate * Revolve_Rate_PCT_per_ORIG + Transactor_0pct_New_Rate * (1 - Revolve_Rate_PCT_per_ORIG),1.1.3.3.1.1.1.3.2,1.1.3.3.1.1.1.3,index110,index91,110,91,"select *, Revolver_Funding_Curve_Rate * Revolve_Rate_PCT_per_ORIG + Transactor_0pct_New_Rate * (1 - Revolve_Rate_PCT_per_ORIG) as COF_RATE_PCT_PER_ORIG from data"
+OS_DLRS_PER_ACTV,OS_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.1.3.1.2,1.1.3.3.1.1.1.3.1,index162,index109,162,109,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,OS_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.1.3.1.1,1.1.3.3.1.1.1.3.1,index161,index109,161,109,
+OS_DLRS_PER_ORIG,NET_COST_OF_FUNDS_DLRS_PER_ORIG,calculated,OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.1.1.3.1,1.1.3.3.1.1.1.3,index109,index91,109,91,"select *, OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OS_DLRS_PER_ORIG from data"
+NET_COST_OF_FUNDS_DLRS_PER_ORIG,NET_INTEREST_MARGIN,calculated,(-1) * (OS_DLRS_per_ORIG * COF_Rate_PCT_per_ORIG ) / 12,1.1.3.3.1.1.1.3,1.1.3.3.1.1.1,index91,index50,91,50,"select *, (-1) * (OS_DLRS_per_ORIG * COF_Rate_PCT_per_ORIG ) / 12 as NET_COST_OF_FUNDS_DLRS_PER_ORIG from data"
+OS_DLRS_PER_ACTV,OS_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.1.2.3.2,1.1.3.3.1.1.1.2.3,index164,index94,164,94,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,OS_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.1.2.3.1,1.1.3.3.1.1.1.2.3,index163,index94,163,94,
+OS_DLRS_PER_ORIG,CHARGE_OFF_REVERSALS,calculated,OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.1.1.2.3,1.1.3.3.1.1.1.2,index94,index90,94,90,"select *, OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OS_DLRS_PER_ORIG from data"
+REVERSAL_DOLLAR_RATE,CHARGE_OFF_REVERSALS,raw,,1.1.3.3.1.1.1.2.2,1.1.3.3.1.1.1.2,index93,index90,93,90,
+CALC_NCL_DOLLAR_RATE_PCT_PER_OR,CHARGE_OFF_REVERSALS,raw,,1.1.3.3.1.1.1.2.1,1.1.3.3.1.1.1.2,index92,index90,92,90,
+CHARGE_OFF_REVERSALS,NET_INTEREST_MARGIN,calculated,(-1) * (OS_DLRS_per_ORIG * Calc_Ncl_Dollar_Rate_PCT_per_OR * reversal_dollar_rate) / 12,1.1.3.3.1.1.1.2,1.1.3.3.1.1.1,index90,index50,90,50,"select *, (-1) * (OS_DLRS_per_ORIG * Calc_Ncl_Dollar_Rate_PCT_per_OR * reversal_dollar_rate) / 12 as CHARGE_OFF_REVERSALS from data"
+SAC_DURATION,GROSS_FINANCE_CHARGE_YIELD,raw,,1.1.3.3.1.1.1.1.4,1.1.3.3.1.1.1.1,index143,index89,143,89,
+PRIME_ASSETS_ONLY_RATE,PENALTY_APR,raw,,1.1.3.3.1.1.1.1.3.2.12.2,1.1.3.3.1.1.1.1.3.2.12,index213,index185,213,185,
+PENALTY_SPREAD,PENALTY_APR,raw,,1.1.3.3.1.1.1.1.3.2.12.1,1.1.3.3.1.1.1.1.3.2.12,index212,index185,212,185,
+PENALTY_APR,APR_PCT_PER_ORIG,calculated,Penalty_Spread + Prime_Assets_Only_Rate,1.1.3.3.1.1.1.1.3.2.12,1.1.3.3.1.1.1.1.3.2,index185,index173,185,173,"select *, Penalty_Spread + Prime_Assets_Only_Rate as PENALTY_APR from data"
+CHK_BAL_PCT_PER_ORIG,APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.11,1.1.3.3.1.1.1.1.3.2,index184,index173,184,173,
+PRIME_ASSETS_ONLY_RATE,BT_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.10.4,1.1.3.3.1.1.1.1.3.2.10,index191,index183,191,183,
+GOTO_SPREAD,BT_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.10.3,1.1.3.3.1.1.1.1.3.2.10,index190,index183,190,183,
+INTRO_RATE_ON_ACQ_BT,BT_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.10.2,1.1.3.3.1.1.1.1.3.2.10,index189,index183,189,183,
+INTRO_DURATION_BT,BT_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.10.1,1.1.3.3.1.1.1.1.3.2.10,index188,index183,188,183,
+BT_APR_PCT_PER_ORIG,APR_PCT_PER_ORIG,calculated,"CASE
+WHEN MOB <= INTRO_DURATION_BT THEN Intro_Rate_on_Acq_BT
+ELSE GOTO_SPREAD + PRIME_ASSETS_ONLY_RATE 
+END",1.1.3.3.1.1.1.1.3.2.10,1.1.3.3.1.1.1.1.3.2,index183,index173,183,173,"select *, CASE
+WHEN MOB <= INTRO_DURATION_BT THEN Intro_Rate_on_Acq_BT
+ELSE GOTO_SPREAD + PRIME_ASSETS_ONLY_RATE 
+END as BT_APR_PCT_PER_ORIG from data"
+SAC_BAL_PCT_PER_ORIG,PURCHASE_BAL_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.9.5,1.1.3.3.1.1.1.1.3.2.9,index211,index182,211,182,
+PENALTY_BAL_PCT_PER_ORIG,PURCHASE_BAL_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.9.4,1.1.3.3.1.1.1.1.3.2.9,index210,index182,210,182,
+BT_BAL_PCT_PER_ORIG,PURCHASE_BAL_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.9.3,1.1.3.3.1.1.1.1.3.2.9,index209,index182,209,182,
+CASH_BAL_PCT_PER_ORIG,PURCHASE_BAL_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.9.2,1.1.3.3.1.1.1.1.3.2.9,index208,index182,208,182,
+CHK_BAL_PCT_PER_ORIG,PURCHASE_BAL_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.9.1,1.1.3.3.1.1.1.1.3.2.9,index207,index182,207,182,
+PURCHASE_BAL_PCT_PER_ORIG,APR_PCT_PER_ORIG,calculated,1 -  ( Sac_Bal_PCT_per_ORIG + Bt_Bal_PCT_per_ORIG + Cash_Bal_PCT_per_ORIG + Chk_Bal_PCT_per_ORIG + Penalty_Bal_PCT_per_ORIG ),1.1.3.3.1.1.1.1.3.2.9,1.1.3.3.1.1.1.1.3.2,index182,index173,182,173,"select *, 1 -  ( Sac_Bal_PCT_per_ORIG + Bt_Bal_PCT_per_ORIG + Cash_Bal_PCT_per_ORIG + Chk_Bal_PCT_per_ORIG + Penalty_Bal_PCT_per_ORIG ) as PURCHASE_BAL_PCT_PER_ORIG from data"
+CHECK_SPREAD,CHECK_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.8.2,1.1.3.3.1.1.1.1.3.2.8,index217,index181,217,181,
+PRIME_ASSETS_ONLY_RATE,CHECK_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.8.1,1.1.3.3.1.1.1.1.3.2.8,index216,index181,216,181,
+CHECK_APR_PCT_PER_ORIG,APR_PCT_PER_ORIG,calculated,case when Check_Spread = 0 then 0 else Prime_Assets_Only_Rate + Check_Spread end,1.1.3.3.1.1.1.1.3.2.8,1.1.3.3.1.1.1.1.3.2,index181,index173,181,173,"select *, case when Check_Spread = 0 then 0 else Prime_Assets_Only_Rate + Check_Spread end as CHECK_APR_PCT_PER_ORIG from data"
+CASH_SPREAD,CASH_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.7.2,1.1.3.3.1.1.1.1.3.2.7,index215,index180,215,180,
+PRIME_ASSETS_ONLY_RATE,CASH_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.7.1,1.1.3.3.1.1.1.1.3.2.7,index214,index180,214,180,
+CASH_APR_PCT_PER_ORIG,APR_PCT_PER_ORIG,calculated,Prime_Assets_Only_Rate + Cash_Spread,1.1.3.3.1.1.1.1.3.2.7,1.1.3.3.1.1.1.1.3.2,index180,index173,180,173,"select *, Prime_Assets_Only_Rate + Cash_Spread as CASH_APR_PCT_PER_ORIG from data"
+SAC_DURATION,SAC_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.6.2,1.1.3.3.1.1.1.1.3.2.6,index187,index179,187,179,
+PRIME_ASSETS_ONLY_RATE,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.6.1.5,1.1.3.3.1.1.1.1.3.2.6.1,index222,index186,222,186,
+GOTO_SPREAD,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.6.1.4,1.1.3.3.1.1.1.1.3.2.6.1,index221,index186,221,186,
+INTRO_RATE_ON_PURCHASE,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.6.1.3,1.1.3.3.1.1.1.1.3.2.6.1,index194,index186,194,186,
+INTRO_DURATION_PURCHASES,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.6.1.2,1.1.3.3.1.1.1.1.3.2.6.1,index219,index186,219,186,
+MOB,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.6.1.1,1.1.3.3.1.1.1.1.3.2.6.1,index218,index186,218,186,
+PURCHASE_APR_PCT_PER_ORIG,SAC_APR_PCT_PER_ORIG,calculated,CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END,1.1.3.3.1.1.1.1.3.2.6.1,1.1.3.3.1.1.1.1.3.2.6,index186,index179,186,179,"select *, CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END as PURCHASE_APR_PCT_PER_ORIG from data"
+SAC_APR_PCT_PER_ORIG,APR_PCT_PER_ORIG,calculated,CASE WHEN MOB<= (SAC_Duration + 1) THEN 0 ELSE Purchase_Apr_PCT_per_ORIG END,1.1.3.3.1.1.1.1.3.2.6,1.1.3.3.1.1.1.1.3.2,index179,index173,179,173,"select *, CASE WHEN MOB<= (SAC_Duration + 1) THEN 0 ELSE Purchase_Apr_PCT_per_ORIG END as SAC_APR_PCT_PER_ORIG from data"
+PRIME_ASSETS_ONLY_RATE,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.5.5,1.1.3.3.1.1.1.1.3.2.5,index201,index178,201,178,
+GOTO_SPREAD,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.5.4,1.1.3.3.1.1.1.1.3.2.5,index200,index178,200,178,
+INTRO_RATE_ON_PURCHASE,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.5.3,1.1.3.3.1.1.1.1.3.2.5,index225,index178,225,178,
+INTRO_DURATION_PURCHASES,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.5.2,1.1.3.3.1.1.1.1.3.2.5,index224,index178,224,178,
+MOB,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.5.1,1.1.3.3.1.1.1.1.3.2.5,index223,index178,223,178,
+PURCHASE_APR_PCT_PER_ORIG,APR_PCT_PER_ORIG,calculated,CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END,1.1.3.3.1.1.1.1.3.2.5,1.1.3.3.1.1.1.1.3.2,index178,index173,178,173,"select *, CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END as PURCHASE_APR_PCT_PER_ORIG from data"
+SAC_BAL_PCT_PER_ORIG,APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.4,1.1.3.3.1.1.1.1.3.2,index177,index173,177,173,
+PENALTY_BAL_PCT_PER_ORIG,APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.3,1.1.3.3.1.1.1.1.3.2,index176,index173,176,173,
+BT_BAL_PCT_PER_ORIG,APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.2,1.1.3.3.1.1.1.1.3.2,index175,index173,175,173,
+CASH_BAL_PCT_PER_ORIG,APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.2.1,1.1.3.3.1.1.1.1.3.2,index174,index173,174,173,
+APR_PCT_PER_ORIG,YIELD_PCT_PER_ORIG,calculated,( Purchase_Apr_PCT_per_ORIG * Purchase_Bal_PCT_per_ORIG + SAC_APR_PCT_per_ORIG * Sac_Bal_PCT_per_ORIG + BT_APR_Pct_per_ORIG * Bt_Bal_PCT_per_ORIG + Cash_APR_Pct_per_ORIG * Cash_Bal_PCT_per_ORIG + Check_APR_Pct_per_ORIG * Chk_Bal_PCT_per_ORIG + Penalty_APR * Penalty_Bal_PCT_per_ORIG ),1.1.3.3.1.1.1.1.3.2,1.1.3.3.1.1.1.1.3,index173,index142,173,142,"select *, ( Purchase_Apr_PCT_per_ORIG * Purchase_Bal_PCT_per_ORIG + SAC_APR_PCT_per_ORIG * Sac_Bal_PCT_per_ORIG + BT_APR_Pct_per_ORIG * Bt_Bal_PCT_per_ORIG + Cash_APR_Pct_per_ORIG * Cash_Bal_PCT_per_ORIG + Check_APR_Pct_per_ORIG * Chk_Bal_PCT_per_ORIG + Penalty_APR * Penalty_Bal_PCT_per_ORIG ) as APR_PCT_PER_ORIG from data"
+REVOLVE_RATE_PCT_PER_ORIG,YIELD_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.3.1,1.1.3.3.1.1.1.1.3,index172,index142,172,142,
+YIELD_PCT_PER_ORIG,GROSS_FINANCE_CHARGE_YIELD,calculated,APR_PCT_per_ORIG*Revolve_Rate_PCT_per_ORIG,1.1.3.3.1.1.1.1.3,1.1.3.3.1.1.1.1,index142,index89,142,89,"select *, APR_PCT_per_ORIG*Revolve_Rate_PCT_per_ORIG as YIELD_PCT_PER_ORIG from data"
+PRIME_ASSETS_ONLY_RATE,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.2.5,1.1.3.3.1.1.1.1.2,index171,index141,171,141,
+GOTO_SPREAD,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.2.4,1.1.3.3.1.1.1.1.2,index170,index141,170,141,
+INTRO_RATE_ON_PURCHASE,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.2.3,1.1.3.3.1.1.1.1.2,index169,index141,169,141,
+INTRO_DURATION_PURCHASES,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.2.2,1.1.3.3.1.1.1.1.2,index203,index141,203,141,
+MOB,PURCHASE_APR_PCT_PER_ORIG,raw,,1.1.3.3.1.1.1.1.2.1,1.1.3.3.1.1.1.1.2,index167,index141,167,141,
+PURCHASE_APR_PCT_PER_ORIG,GROSS_FINANCE_CHARGE_YIELD,calculated,CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END,1.1.3.3.1.1.1.1.2,1.1.3.3.1.1.1.1,index141,index89,141,89,"select *, CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END as PURCHASE_APR_PCT_PER_ORIG from data"
+OS_DLRS_PER_ACTV,OS_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.1.1.1.2,1.1.3.3.1.1.1.1.1,index160,index140,160,140,
+ACTIVE_ACCOUNTS_PCT_PER_ORIG,OS_DLRS_PER_ORIG,raw,,1.1.3.3.1.1.1.1.1.1,1.1.3.3.1.1.1.1.1,index159,index140,159,140,
+OS_DLRS_PER_ORIG,GROSS_FINANCE_CHARGE_YIELD,calculated,OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG,1.1.3.3.1.1.1.1.1,1.1.3.3.1.1.1.1,index140,index89,140,89,"select *, OS_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OS_DLRS_PER_ORIG from data"
+GROSS_FINANCE_CHARGE_YIELD,NET_INTEREST_MARGIN,calculated,(Yield_PCT_per_ORIG  * OS_DLRS_per_ORIG) / 12,1.1.3.3.1.1.1.1,1.1.3.3.1.1.1,index89,index50,89,50,"select *, (Yield_PCT_per_ORIG  * OS_DLRS_per_ORIG) / 12 as GROSS_FINANCE_CHARGE_YIELD from data"
+NET_INTEREST_MARGIN,NET_INTEREST_INCOME,calculated,Gross_Finance_Charge_YIELD + Charge_off_Reversals + Net_Cost_of_Funds_DLRS_per_ORIG,1.1.3.3.1.1.1,1.1.3.3.1.1,index50,index27,50,27,"select *, Gross_Finance_Charge_YIELD + Charge_off_Reversals + Net_Cost_of_Funds_DLRS_per_ORIG as NET_INTEREST_MARGIN from data"
+NET_INTEREST_INCOME,TOTAL_INCOME,calculated,net_interest_margin + BT_Fee_Income_DLRS_per_ORIG,1.1.3.3.1.1,1.1.3.3.1,index27,index17,27,17,"select *, net_interest_margin + BT_Fee_Income_DLRS_per_ORIG as NET_INTEREST_INCOME from data"
+TOTAL_INCOME,PBT_DLRS_PER_ORIG,calculated,Net_interest_income + net_non_interest_income,1.1.3.3.1,1.1.3.3,index17,index14,17,14,"select *, Net_interest_income + net_non_interest_income as TOTAL_INCOME from data"
+PBT_DLRS_PER_ORIG,PAT_DLRS_PER_ORIG,calculated,Total_Income + total_risk + total_opex,1.1.3.3,1.1.3,index14,index9,14,9,"select *, Total_Income + total_risk + total_opex as PBT_DLRS_PER_ORIG from data"
+TAX_RATE,PAT_DLRS_PER_ORIG,raw,,1.1.3.2,1.1.3,index13,index9,13,9,
+PROFIT_SHARE,PAT_DLRS_PER_ORIG,calculated,,1.1.3.1,1.1.3,index12,index9,12,9,"select *, nan as PROFIT_SHARE from data"
+PAT_DLRS_PER_ORIG,PV_OF_PAT_DLRS_PER_ORIG,calculated,(PBT_DLRS_per_ORIG + ((-1) * profit_share) ) * (1- Tax_Rate),1.1.3,1.1,index9,index2,9,2,"select *, (PBT_DLRS_per_ORIG + ((-1) * profit_share) ) * (1- Tax_Rate) as PAT_DLRS_PER_ORIG from data"
+COST_OF_EQUITY,PV_OF_PAT_DLRS_PER_ORIG,raw,,1.1.2,1.1,index8,index2,8,2,
+MOB,PV_OF_PAT_DLRS_PER_ORIG,raw,,1.1.1,1.1,index7,index2,7,2,
+PV_OF_PAT_DLRS_PER_ORIG,EV_DLRS_PER_ORIG,calculated,"PAT_DLRS_per_ORIG / Power(( 1+ Cost_of_Equity / 12), MOB)",1.1,1,index2,index1,2,1,"select *, PAT_DLRS_per_ORIG / power(( 1+ Cost_of_Equity / 12), MOB) as PV_OF_PAT_DLRS_PER_ORIG from data"
+EV_DLRS_PER_ORIG,,calculated,PV_of_PAT_DLRS_per_ORIG + Discounted_EC_DLRS_per_ORIG,1,,index1,,1,,"select *, PV_of_PAT_DLRS_per_ORIG + Discounted_EC_DLRS_per_ORIG as EV_DLRS_PER_ORIG from data"
