@@ -1,0 +1,634 @@
+##########
+#     Baseline     #
+##########
+LOOKING AT: 1.2.3.2.1, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.2.3.2, ECONOMIC_CAPITAL_DLRS_PER_ORIG 
+Calculated Node: ECONOMIC_CAPITAL_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.2.3, CHANGE_IN_EC_DLRS_PER_ORIG 
+Calculated Node: CHANGE_IN_EC_DLRS_PER_ORIG is NOT in the data
+Calculated Node: CHANGE_IN_EC_DLRS_PER_ORIG  has formula: select *, L_Economic_Capital_DLRS_per_ORIG - Economic_Capital_DLRS_per_ORIG as CHANGE_IN_EC_DLRS_PER_ORIG from data
+Calculated Node: CHANGE_IN_EC_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.2, DISCOUNTED_EC_DLRS_PER_ORIG 
+Calculated Node: DISCOUNTED_EC_DLRS_PER_ORIG is NOT in the data
+Calculated Node: DISCOUNTED_EC_DLRS_PER_ORIG  has formula: select *, Change_in_EC_DLRS_per_ORIG / power((1+ Cost_of_Equity / 12), MOB) as DISCOUNTED_EC_DLRS_PER_ORIG from data
+Calculated Node: DISCOUNTED_EC_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.5, ACQUISITION_COST_DLRS_PER_ORIG 
+Calculated Node: ACQUISITION_COST_DLRS_PER_ORIG is NOT in the data
+Calculated Node: ACQUISITION_COST_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN -1 * (Internal_Sales_Cost + Acquisition_Cost)
+ELSE  0 
+END as ACQUISITION_COST_DLRS_PER_ORIG from data
+Calculated Node: ACQUISITION_COST_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.4.2, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: SALES_DLRS_PER_ORIG  has formula: select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data
+Calculated Node: SALES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.4, FRAUD_DLRS_PER_ORIG 
+Calculated Node: FRAUD_DLRS_PER_ORIG is NOT in the data
+Calculated Node: FRAUD_DLRS_PER_ORIG  has formula: select *, -1 * Fraud_Rate * Sales_DLRS_per_ORIG as FRAUD_DLRS_PER_ORIG from data
+Calculated Node: FRAUD_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.3, ACCOUNT_SETUP_DLRS_PER_ORIG 
+Calculated Node: ACCOUNT_SETUP_DLRS_PER_ORIG is NOT in the data
+Calculated Node: ACCOUNT_SETUP_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN Account_Setup
+ELSE  0 
+END as ACCOUNT_SETUP_DLRS_PER_ORIG from data
+Calculated Node: ACCOUNT_SETUP_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.2.1, OPERATING_EXP_PER_ACTIVE_BLENDED 
+Calculated Node: OPERATING_EXP_PER_ACTIVE_BLENDED is already in the data
+
+LOOKING AT: 1.1.3.3.3.2, MARGINAL_OPEX_DLRS_PER_ORIG 
+Calculated Node: MARGINAL_OPEX_DLRS_PER_ORIG is NOT in the data
+Calculated Node: MARGINAL_OPEX_DLRS_PER_ORIG  has formula: select *, Active_Accounts_PCT_per_ORIG * Operating_Exp_Per_Active_Blended as MARGINAL_OPEX_DLRS_PER_ORIG from data
+Calculated Node: MARGINAL_OPEX_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.1, REVSHARE_AEP_DLRS_PER_ORIG 
+Calculated Node: REVSHARE_AEP_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REVSHARE_AEP_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN First_Ever_PCT_per_ACTV * (AEP_First_Active_Prime) * Prime_Account_Pct + First_Ever_PCT_per_ACTV * (AEP_First_Active_Middle) * Middle_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Prime * Prime_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Middle * Middle_Account_Pct
+ELSE
+(First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Prime) * Prime_Account_Pct + (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Middle) * Middle_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) * AEP_Second_Active_Prime * Prime_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) *  AEP_Second_Active_Middle * Middle_Account_Pct
+END as REVSHARE_AEP_DLRS_PER_ORIG from data
+Calculated Node: REVSHARE_AEP_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3, TOTAL_OPEX 
+Calculated Node: TOTAL_OPEX is NOT in the data
+Calculated Node: TOTAL_OPEX  has formula: select *, RevShare_AEP_DLRS_per_ORIG + Marginal_Opex_DLRS_per_ORIG + Account_Setup_DLRS_per_ORIG + Fraud_DLRS_per_ORIG + Acquisition_Cost_DLRS_per_ORIG as TOTAL_OPEX from data
+Calculated Node: TOTAL_OPEX has been added to data
+
+LOOKING AT: 1.1.3.3.2.2, CHANGE_IN_LLR_DLRS_PER_ORIG 
+Calculated Node: CHANGE_IN_LLR_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.2, TOTAL_RISK 
+Calculated Node: TOTAL_RISK is NOT in the data
+Calculated Node: TOTAL_RISK  has formula: select *, Write_off + Change_in_LLR_DLRS_per_ORIG as TOTAL_RISK from data
+Calculated Node: TOTAL_RISK has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.6, NET_ANNUAL_FEES_DLRS_PER_ORIG 
+Calculated Node: NET_ANNUAL_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: NET_ANNUAL_FEES_DLRS_PER_ORIG  has formula: select *, (Gross_Annual_Fees_DLRS_per_ACTV+ Reversed_Annual_Fees_DLRS_per_AC)*Active_Accounts_PCT_per_ORIG as NET_ANNUAL_FEES_DLRS_PER_ORIG from data
+Calculated Node: NET_ANNUAL_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.5, OTHER_FEES_DLRS_PER_ORIG 
+Calculated Node: OTHER_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: OTHER_FEES_DLRS_PER_ORIG  has formula: select *, Other_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OTHER_FEES_DLRS_PER_ORIG from data
+Calculated Node: OTHER_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.4, CASH_FEES_DLRS_PER_ORIG 
+Calculated Node: CASH_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: CASH_FEES_DLRS_PER_ORIG  has formula: select *, Active_Accounts_PCT_per_ORIG * Ca_Fee_DLRS_per_ACTV as CASH_FEES_DLRS_PER_ORIG from data
+Calculated Node: CASH_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.3, FOREIGN_CURRENCY_FEE 
+Calculated Node: FOREIGN_CURRENCY_FEE is NOT in the data
+Calculated Node: FOREIGN_CURRENCY_FEE  has formula: select *, Active_Accounts_PCT_per_ORIG * Fc_Fee_DLRS_per_ACTV as FOREIGN_CURRENCY_FEE from data
+Calculated Node: FOREIGN_CURRENCY_FEE has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.2, CHECK_BT_FEE_DLRS_PER_ORIG 
+Calculated Node: CHECK_BT_FEE_DLRS_PER_ORIG is NOT in the data
+Calculated Node: CHECK_BT_FEE_DLRS_PER_ORIG  has formula: select *, Check_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as CHECK_BT_FEE_DLRS_PER_ORIG from data
+Calculated Node: CHECK_BT_FEE_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.1, LATE_FEES_DLRS_PER_ORIG 
+Calculated Node: LATE_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: LATE_FEES_DLRS_PER_ORIG  has formula: select *, Late_Fees_Incident_PCT_per_ACTV * Active_Accounts_PCT_per_ORIG * Late_Fees as LATE_FEES_DLRS_PER_ORIG from data
+Calculated Node: LATE_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5, FEE_INCOME 
+Calculated Node: FEE_INCOME is NOT in the data
+Calculated Node: FEE_INCOME  has formula: select *, Late_Fees_DLRS_per_ORIG + Check_BT_Fee_DLRS_per_ORIG + Foreign_Currency_Fee + Cash_Fees_DLRS_per_ORIG + Other_Fees_DLRS_per_ORIG + Net_Annual_Fees_DLRS_per_ORIG as FEE_INCOME from data
+Calculated Node: FEE_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.4, BONUS_REVENUE_SHARING 
+Calculated Node: BONUS_REVENUE_SHARING is NOT in the data
+Calculated Node: BONUS_REVENUE_SHARING  has formula: select *, CASE
+WHEN MOB = 1 then Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * First_Ever_PCT_per_ACTV + BT_Bonus_Point_Cost
+WHEN First_Ever_PCT_per_ACTV > L_First_Ever_PCT_per_ACTV THEN Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV ) + BT_Bonus_Point_Cost
+ELSE 0
+END as BONUS_REVENUE_SHARING from data
+Calculated Node: BONUS_REVENUE_SHARING has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3.3, REVSHARE_RENEW_DLRS_PER_ORIG 
+Calculated Node: REVSHARE_RENEW_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REVSHARE_RENEW_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN -1 * Dollars_per_new
+ELSE -1 * dollarnew1 * Dollars_per_renew
+END as REVSHARE_RENEW_DLRS_PER_ORIG from data
+Calculated Node: REVSHARE_RENEW_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3.2.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.3.2, EXCISE_PER_DLRS_PER_ORIG 
+Calculated Node: EXCISE_PER_DLRS_PER_ORIG is NOT in the data
+Calculated Node: EXCISE_PER_DLRS_PER_ORIG  has formula: select *, Sales_DLRS_per_ORIG * (-1) * Excise_Tax as EXCISE_PER_DLRS_PER_ORIG from data
+Calculated Node: EXCISE_PER_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3.1.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.3.1, REVSHARE_BP_DLRS_PER_ORIG 
+Calculated Node: REVSHARE_BP_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REVSHARE_BP_DLRS_PER_ORIG  has formula: select *, (Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_nofee * No_Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1-On_Spend_PCT_per_ORIG) * rev_share_off_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1- On_Spend_PCT_per_ORIG) * rev_share_off_nofee * No_Fee_Sales_Pct) * (-1) as REVSHARE_BP_DLRS_PER_ORIG from data
+Calculated Node: REVSHARE_BP_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3, SPEND_REV_SHARE_PARTNER 
+Calculated Node: SPEND_REV_SHARE_PARTNER is NOT in the data
+Calculated Node: SPEND_REV_SHARE_PARTNER  has formula: select *, RevShare_BP_DLRS_per_ORIG + Excise_per_DLRS_per_ORIG + RevShare_Renew_DLRS_per_ORIG as SPEND_REV_SHARE_PARTNER from data
+Calculated Node: SPEND_REV_SHARE_PARTNER has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.2.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.2, REWARDS_EXPENSE_DLRS_PER_ORIG 
+Calculated Node: REWARDS_EXPENSE_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REWARDS_EXPENSE_DLRS_PER_ORIG  has formula: select *, (-1) * (Sales_DLRS_per_ORIG * Cost_Per_Point) as REWARDS_EXPENSE_DLRS_PER_ORIG from data
+Calculated Node: REWARDS_EXPENSE_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.1.7.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.1.7, MDR_DLRS_PER_ORIG 
+Calculated Node: MDR_DLRS_PER_ORIG is NOT in the data
+Calculated Node: MDR_DLRS_PER_ORIG  has formula: select *, MDR * Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG as MDR_DLRS_PER_ORIG from data
+Calculated Node: MDR_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.1.6, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.1.5, INTERCHANGE_OFF_SPEND 
+Calculated Node: INTERCHANGE_OFF_SPEND is NOT in the data
+Calculated Node: INTERCHANGE_OFF_SPEND  has formula: select *, case
+when Interchange_Relief_Flag = 1 then 1 - On_Spend_PCT_per_ORIG
+else 1
+END as INTERCHANGE_OFF_SPEND from data
+Calculated Node: INTERCHANGE_OFF_SPEND has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.1, INTERCHANGE_INCOME 
+Calculated Node: INTERCHANGE_INCOME is NOT in the data
+Calculated Node: INTERCHANGE_INCOME  has formula: select *, (Pct_of_Sales_World * Net_Interchange_World + Pct_of_Sales_Non_World * Net_Interchange_Non_World) * Sales_DLRS_per_ORIG * Interchange_off_spend + MDR_DLRS_per_ORIG as INTERCHANGE_INCOME from data
+Calculated Node: INTERCHANGE_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1.2, NET_NON_INTEREST_INCOME 
+Calculated Node: NET_NON_INTEREST_INCOME is NOT in the data
+Calculated Node: NET_NON_INTEREST_INCOME  has formula: select *, interchange_income + Rewards_Expense_DLRS_per_ORIG + Spend_Rev_Share_Partner + Bonus_Revenue_Sharing + Fee_Income as NET_NON_INTEREST_INCOME from data
+Calculated Node: NET_NON_INTEREST_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.2, BT_FEE_INCOME_DLRS_PER_ORIG 
+Calculated Node: BT_FEE_INCOME_DLRS_PER_ORIG is NOT in the data
+Calculated Node: BT_FEE_INCOME_DLRS_PER_ORIG  has formula: select *, Active_Accounts_PCT_per_ORIG * BT_Fee_DLRS_per_ACTV as BT_FEE_INCOME_DLRS_PER_ORIG from data
+Calculated Node: BT_FEE_INCOME_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.3.2, COF_RATE_PCT_PER_ORIG 
+Calculated Node: COF_RATE_PCT_PER_ORIG is NOT in the data
+Calculated Node: COF_RATE_PCT_PER_ORIG  has formula: select *, Revolver_Funding_Curve_Rate * Revolve_Rate_PCT_per_ORIG + Transactor_0pct_New_Rate * (1 - Revolve_Rate_PCT_per_ORIG) as COF_RATE_PCT_PER_ORIG from data
+Calculated Node: COF_RATE_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.3.1, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.3, NET_COST_OF_FUNDS_DLRS_PER_ORIG 
+Calculated Node: NET_COST_OF_FUNDS_DLRS_PER_ORIG is NOT in the data
+Calculated Node: NET_COST_OF_FUNDS_DLRS_PER_ORIG  has formula: select *, (-1) * (OS_DLRS_per_ORIG * COF_Rate_PCT_per_ORIG ) / 12 as NET_COST_OF_FUNDS_DLRS_PER_ORIG from data
+Calculated Node: NET_COST_OF_FUNDS_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.2.3, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.2, CHARGE_OFF_REVERSALS 
+Calculated Node: CHARGE_OFF_REVERSALS is NOT in the data
+Calculated Node: CHARGE_OFF_REVERSALS  has formula: select *, (-1) * (OS_DLRS_per_ORIG * Calc_Ncl_Dollar_Rate_PCT_per_OR * reversal_dollar_rate) / 12 as CHARGE_OFF_REVERSALS from data
+Calculated Node: CHARGE_OFF_REVERSALS has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.12, PENALTY_APR 
+Calculated Node: PENALTY_APR is NOT in the data
+Calculated Node: PENALTY_APR  has formula: select *, Penalty_Spread + Prime_Assets_Only_Rate as PENALTY_APR from data
+Calculated Node: PENALTY_APR has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.10, BT_APR_PCT_PER_ORIG 
+Calculated Node: BT_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: BT_APR_PCT_PER_ORIG  has formula: select *, CASE
+WHEN MOB <= INTRO_DURATION_BT THEN Intro_Rate_on_Acq_BT
+ELSE GOTO_SPREAD + PRIME_ASSETS_ONLY_RATE 
+END as BT_APR_PCT_PER_ORIG from data
+Calculated Node: BT_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.9, PURCHASE_BAL_PCT_PER_ORIG 
+Calculated Node: PURCHASE_BAL_PCT_PER_ORIG is NOT in the data
+Calculated Node: PURCHASE_BAL_PCT_PER_ORIG  has formula: select *, 1 -  ( Sac_Bal_PCT_per_ORIG + Bt_Bal_PCT_per_ORIG + Cash_Bal_PCT_per_ORIG + Chk_Bal_PCT_per_ORIG + Penalty_Bal_PCT_per_ORIG ) as PURCHASE_BAL_PCT_PER_ORIG from data
+Calculated Node: PURCHASE_BAL_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.8, CHECK_APR_PCT_PER_ORIG 
+Calculated Node: CHECK_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: CHECK_APR_PCT_PER_ORIG  has formula: select *, case when Check_Spread = 0 then 0 else Prime_Assets_Only_Rate + Check_Spread end as CHECK_APR_PCT_PER_ORIG from data
+Calculated Node: CHECK_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.7, CASH_APR_PCT_PER_ORIG 
+Calculated Node: CASH_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: CASH_APR_PCT_PER_ORIG  has formula: select *, Prime_Assets_Only_Rate + Cash_Spread as CASH_APR_PCT_PER_ORIG from data
+Calculated Node: CASH_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.6.1, PURCHASE_APR_PCT_PER_ORIG 
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG  has formula: select *, CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END as PURCHASE_APR_PCT_PER_ORIG from data
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.6, SAC_APR_PCT_PER_ORIG 
+Calculated Node: SAC_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: SAC_APR_PCT_PER_ORIG  has formula: select *, CASE WHEN MOB<= (SAC_Duration + 1) THEN 0 ELSE Purchase_Apr_PCT_per_ORIG END as SAC_APR_PCT_PER_ORIG from data
+Calculated Node: SAC_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.5, PURCHASE_APR_PCT_PER_ORIG 
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2, APR_PCT_PER_ORIG 
+Calculated Node: APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: APR_PCT_PER_ORIG  has formula: select *, ( Purchase_Apr_PCT_per_ORIG * Purchase_Bal_PCT_per_ORIG + SAC_APR_PCT_per_ORIG * Sac_Bal_PCT_per_ORIG + BT_APR_Pct_per_ORIG * Bt_Bal_PCT_per_ORIG + Cash_APR_Pct_per_ORIG * Cash_Bal_PCT_per_ORIG + Check_APR_Pct_per_ORIG * Chk_Bal_PCT_per_ORIG + Penalty_APR * Penalty_Bal_PCT_per_ORIG ) as APR_PCT_PER_ORIG from data
+Calculated Node: APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3, YIELD_PCT_PER_ORIG 
+Calculated Node: YIELD_PCT_PER_ORIG is NOT in the data
+Calculated Node: YIELD_PCT_PER_ORIG  has formula: select *, APR_PCT_per_ORIG*Revolve_Rate_PCT_per_ORIG as YIELD_PCT_PER_ORIG from data
+Calculated Node: YIELD_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.2, PURCHASE_APR_PCT_PER_ORIG 
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.1, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.1, GROSS_FINANCE_CHARGE_YIELD 
+Calculated Node: GROSS_FINANCE_CHARGE_YIELD is NOT in the data
+Calculated Node: GROSS_FINANCE_CHARGE_YIELD  has formula: select *, (Yield_PCT_per_ORIG  * OS_DLRS_per_ORIG) / 12 as GROSS_FINANCE_CHARGE_YIELD from data
+Calculated Node: GROSS_FINANCE_CHARGE_YIELD has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1, NET_INTEREST_MARGIN 
+Calculated Node: NET_INTEREST_MARGIN is NOT in the data
+Calculated Node: NET_INTEREST_MARGIN  has formula: select *, Gross_Finance_Charge_YIELD + Charge_off_Reversals + Net_Cost_of_Funds_DLRS_per_ORIG as NET_INTEREST_MARGIN from data
+Calculated Node: NET_INTEREST_MARGIN has been added to data
+
+LOOKING AT: 1.1.3.3.1.1, NET_INTEREST_INCOME 
+Calculated Node: NET_INTEREST_INCOME is NOT in the data
+Calculated Node: NET_INTEREST_INCOME  has formula: select *, net_interest_margin + BT_Fee_Income_DLRS_per_ORIG as NET_INTEREST_INCOME from data
+Calculated Node: NET_INTEREST_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1, TOTAL_INCOME 
+Calculated Node: TOTAL_INCOME is NOT in the data
+Calculated Node: TOTAL_INCOME  has formula: select *, Net_interest_income + net_non_interest_income as TOTAL_INCOME from data
+Calculated Node: TOTAL_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3, PBT_DLRS_PER_ORIG 
+Calculated Node: PBT_DLRS_PER_ORIG is NOT in the data
+Calculated Node: PBT_DLRS_PER_ORIG  has formula: select *, Total_Income + total_risk + total_opex as PBT_DLRS_PER_ORIG from data
+Calculated Node: PBT_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.1, PROFIT_SHARE 
+Calculated Node: PROFIT_SHARE is NOT in the data
+Calculated Node: PROFIT_SHARE  has formula: select *, nan as PROFIT_SHARE from data
+Looking at Special Case: PROFIT SHARE
+Calculated Node: PROFIT_SHARE has been added to data
+
+LOOKING AT: 1.1.3, PAT_DLRS_PER_ORIG 
+Calculated Node: PAT_DLRS_PER_ORIG is NOT in the data
+Calculated Node: PAT_DLRS_PER_ORIG  has formula: select *, (PBT_DLRS_per_ORIG + ((-1) * profit_share) ) * (1- Tax_Rate) as PAT_DLRS_PER_ORIG from data
+Calculated Node: PAT_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1, PV_OF_PAT_DLRS_PER_ORIG 
+Calculated Node: PV_OF_PAT_DLRS_PER_ORIG is NOT in the data
+Calculated Node: PV_OF_PAT_DLRS_PER_ORIG  has formula: select *, PAT_DLRS_per_ORIG / power(( 1+ Cost_of_Equity / 12), MOB) as PV_OF_PAT_DLRS_PER_ORIG from data
+Calculated Node: PV_OF_PAT_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1, EV_DLRS_PER_ORIG 
+Calculated Node: EV_DLRS_PER_ORIG is NOT in the data
+Calculated Node: EV_DLRS_PER_ORIG  has formula: select *, PV_of_PAT_DLRS_per_ORIG + Discounted_EC_DLRS_per_ORIG as EV_DLRS_PER_ORIG from data
+Calculated Node: EV_DLRS_PER_ORIG has been added to data
+
+##########
+#     Scenerios_1     #
+##########
+LOOKING AT: 1.2.3.2.1, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.2.3.2, ECONOMIC_CAPITAL_DLRS_PER_ORIG 
+Calculated Node: ECONOMIC_CAPITAL_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.2.3, CHANGE_IN_EC_DLRS_PER_ORIG 
+Calculated Node: CHANGE_IN_EC_DLRS_PER_ORIG is NOT in the data
+Calculated Node: CHANGE_IN_EC_DLRS_PER_ORIG  has formula: select *, L_Economic_Capital_DLRS_per_ORIG - Economic_Capital_DLRS_per_ORIG as CHANGE_IN_EC_DLRS_PER_ORIG from data
+Calculated Node: CHANGE_IN_EC_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.2, DISCOUNTED_EC_DLRS_PER_ORIG 
+Calculated Node: DISCOUNTED_EC_DLRS_PER_ORIG is NOT in the data
+Calculated Node: DISCOUNTED_EC_DLRS_PER_ORIG  has formula: select *, Change_in_EC_DLRS_per_ORIG / power((1+ Cost_of_Equity / 12), MOB) as DISCOUNTED_EC_DLRS_PER_ORIG from data
+Calculated Node: DISCOUNTED_EC_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.5, ACQUISITION_COST_DLRS_PER_ORIG 
+Calculated Node: ACQUISITION_COST_DLRS_PER_ORIG is NOT in the data
+Calculated Node: ACQUISITION_COST_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN -1 * (Internal_Sales_Cost + Acquisition_Cost)
+ELSE  0 
+END as ACQUISITION_COST_DLRS_PER_ORIG from data
+Calculated Node: ACQUISITION_COST_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.4.2, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: SALES_DLRS_PER_ORIG  has formula: select *, Sales_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as SALES_DLRS_PER_ORIG from data
+Calculated Node: SALES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.4, FRAUD_DLRS_PER_ORIG 
+Calculated Node: FRAUD_DLRS_PER_ORIG is NOT in the data
+Calculated Node: FRAUD_DLRS_PER_ORIG  has formula: select *, -1 * Fraud_Rate * Sales_DLRS_per_ORIG as FRAUD_DLRS_PER_ORIG from data
+Calculated Node: FRAUD_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.3, ACCOUNT_SETUP_DLRS_PER_ORIG 
+Calculated Node: ACCOUNT_SETUP_DLRS_PER_ORIG is NOT in the data
+Calculated Node: ACCOUNT_SETUP_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN Account_Setup
+ELSE  0 
+END as ACCOUNT_SETUP_DLRS_PER_ORIG from data
+Calculated Node: ACCOUNT_SETUP_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.2.1, OPERATING_EXP_PER_ACTIVE_BLENDED 
+Calculated Node: OPERATING_EXP_PER_ACTIVE_BLENDED is already in the data
+
+LOOKING AT: 1.1.3.3.3.2, MARGINAL_OPEX_DLRS_PER_ORIG 
+Calculated Node: MARGINAL_OPEX_DLRS_PER_ORIG is NOT in the data
+Calculated Node: MARGINAL_OPEX_DLRS_PER_ORIG  has formula: select *, Active_Accounts_PCT_per_ORIG * Operating_Exp_Per_Active_Blended as MARGINAL_OPEX_DLRS_PER_ORIG from data
+Calculated Node: MARGINAL_OPEX_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3.1, REVSHARE_AEP_DLRS_PER_ORIG 
+Calculated Node: REVSHARE_AEP_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REVSHARE_AEP_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN First_Ever_PCT_per_ACTV * (AEP_First_Active_Prime) * Prime_Account_Pct + First_Ever_PCT_per_ACTV * (AEP_First_Active_Middle) * Middle_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Prime * Prime_Account_Pct + Second_Ever_PCT_per_ACTV * AEP_Second_Active_Middle * Middle_Account_Pct
+ELSE
+(First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Prime) * Prime_Account_Pct + (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV) * (AEP_First_Active_Middle) * Middle_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) * AEP_Second_Active_Prime * Prime_Account_Pct + (Second_Ever_PCT_per_ACTV - L_Second_Ever_PCT_per_ACTV) *  AEP_Second_Active_Middle * Middle_Account_Pct
+END as REVSHARE_AEP_DLRS_PER_ORIG from data
+Calculated Node: REVSHARE_AEP_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.3, TOTAL_OPEX 
+Calculated Node: TOTAL_OPEX is NOT in the data
+Calculated Node: TOTAL_OPEX  has formula: select *, RevShare_AEP_DLRS_per_ORIG + Marginal_Opex_DLRS_per_ORIG + Account_Setup_DLRS_per_ORIG + Fraud_DLRS_per_ORIG + Acquisition_Cost_DLRS_per_ORIG as TOTAL_OPEX from data
+Calculated Node: TOTAL_OPEX has been added to data
+
+LOOKING AT: 1.1.3.3.2.2, CHANGE_IN_LLR_DLRS_PER_ORIG 
+Calculated Node: CHANGE_IN_LLR_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.2, TOTAL_RISK 
+Calculated Node: TOTAL_RISK is NOT in the data
+Calculated Node: TOTAL_RISK  has formula: select *, Write_off + Change_in_LLR_DLRS_per_ORIG as TOTAL_RISK from data
+Calculated Node: TOTAL_RISK has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.6, NET_ANNUAL_FEES_DLRS_PER_ORIG 
+Calculated Node: NET_ANNUAL_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: NET_ANNUAL_FEES_DLRS_PER_ORIG  has formula: select *, (Gross_Annual_Fees_DLRS_per_ACTV+ Reversed_Annual_Fees_DLRS_per_AC)*Active_Accounts_PCT_per_ORIG as NET_ANNUAL_FEES_DLRS_PER_ORIG from data
+Calculated Node: NET_ANNUAL_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.5, OTHER_FEES_DLRS_PER_ORIG 
+Calculated Node: OTHER_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: OTHER_FEES_DLRS_PER_ORIG  has formula: select *, Other_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as OTHER_FEES_DLRS_PER_ORIG from data
+Calculated Node: OTHER_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.4, CASH_FEES_DLRS_PER_ORIG 
+Calculated Node: CASH_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: CASH_FEES_DLRS_PER_ORIG  has formula: select *, Active_Accounts_PCT_per_ORIG * Ca_Fee_DLRS_per_ACTV as CASH_FEES_DLRS_PER_ORIG from data
+Calculated Node: CASH_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.3, FOREIGN_CURRENCY_FEE 
+Calculated Node: FOREIGN_CURRENCY_FEE is NOT in the data
+Calculated Node: FOREIGN_CURRENCY_FEE  has formula: select *, Active_Accounts_PCT_per_ORIG * Fc_Fee_DLRS_per_ACTV as FOREIGN_CURRENCY_FEE from data
+Calculated Node: FOREIGN_CURRENCY_FEE has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.2, CHECK_BT_FEE_DLRS_PER_ORIG 
+Calculated Node: CHECK_BT_FEE_DLRS_PER_ORIG is NOT in the data
+Calculated Node: CHECK_BT_FEE_DLRS_PER_ORIG  has formula: select *, Check_Fees_DLRS_per_ACTV * Active_Accounts_PCT_per_ORIG as CHECK_BT_FEE_DLRS_PER_ORIG from data
+Calculated Node: CHECK_BT_FEE_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5.1, LATE_FEES_DLRS_PER_ORIG 
+Calculated Node: LATE_FEES_DLRS_PER_ORIG is NOT in the data
+Calculated Node: LATE_FEES_DLRS_PER_ORIG  has formula: select *, Late_Fees_Incident_PCT_per_ACTV * Active_Accounts_PCT_per_ORIG * Late_Fees as LATE_FEES_DLRS_PER_ORIG from data
+Calculated Node: LATE_FEES_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.5, FEE_INCOME 
+Calculated Node: FEE_INCOME is NOT in the data
+Calculated Node: FEE_INCOME  has formula: select *, Late_Fees_DLRS_per_ORIG + Check_BT_Fee_DLRS_per_ORIG + Foreign_Currency_Fee + Cash_Fees_DLRS_per_ORIG + Other_Fees_DLRS_per_ORIG + Net_Annual_Fees_DLRS_per_ORIG as FEE_INCOME from data
+Calculated Node: FEE_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.4, BONUS_REVENUE_SHARING 
+Calculated Node: BONUS_REVENUE_SHARING is NOT in the data
+Calculated Node: BONUS_REVENUE_SHARING  has formula: select *, CASE
+WHEN MOB = 1 then Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * First_Ever_PCT_per_ACTV + BT_Bonus_Point_Cost
+WHEN First_Ever_PCT_per_ACTV > L_First_Ever_PCT_per_ACTV THEN Blended_Bonus_Amount * Spend_Threshold_Factor * Bonus_Point_Cost * (-1) * (First_Ever_PCT_per_ACTV - L_First_Ever_PCT_per_ACTV ) + BT_Bonus_Point_Cost
+ELSE 0
+END as BONUS_REVENUE_SHARING from data
+Calculated Node: BONUS_REVENUE_SHARING has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3.3, REVSHARE_RENEW_DLRS_PER_ORIG 
+Calculated Node: REVSHARE_RENEW_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REVSHARE_RENEW_DLRS_PER_ORIG  has formula: select *, CASE
+WHEN MOB = 1 THEN -1 * Dollars_per_new
+ELSE -1 * dollarnew1 * Dollars_per_renew
+END as REVSHARE_RENEW_DLRS_PER_ORIG from data
+Calculated Node: REVSHARE_RENEW_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3.2.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.3.2, EXCISE_PER_DLRS_PER_ORIG 
+Calculated Node: EXCISE_PER_DLRS_PER_ORIG is NOT in the data
+Calculated Node: EXCISE_PER_DLRS_PER_ORIG  has formula: select *, Sales_DLRS_per_ORIG * (-1) * Excise_Tax as EXCISE_PER_DLRS_PER_ORIG from data
+Calculated Node: EXCISE_PER_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3.1.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.3.1, REVSHARE_BP_DLRS_PER_ORIG 
+Calculated Node: REVSHARE_BP_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REVSHARE_BP_DLRS_PER_ORIG  has formula: select *, (Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG * rev_share_on_nofee * No_Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1-On_Spend_PCT_per_ORIG) * rev_share_off_fee * Fee_Sales_Pct +
+Sales_DLRS_per_ORIG * (1- On_Spend_PCT_per_ORIG) * rev_share_off_nofee * No_Fee_Sales_Pct) * (-1) as REVSHARE_BP_DLRS_PER_ORIG from data
+Calculated Node: REVSHARE_BP_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.3, SPEND_REV_SHARE_PARTNER 
+Calculated Node: SPEND_REV_SHARE_PARTNER is NOT in the data
+Calculated Node: SPEND_REV_SHARE_PARTNER  has formula: select *, RevShare_BP_DLRS_per_ORIG + Excise_per_DLRS_per_ORIG + RevShare_Renew_DLRS_per_ORIG as SPEND_REV_SHARE_PARTNER from data
+Calculated Node: SPEND_REV_SHARE_PARTNER has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.2.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.2, REWARDS_EXPENSE_DLRS_PER_ORIG 
+Calculated Node: REWARDS_EXPENSE_DLRS_PER_ORIG is NOT in the data
+Calculated Node: REWARDS_EXPENSE_DLRS_PER_ORIG  has formula: select *, (-1) * (Sales_DLRS_per_ORIG * Cost_Per_Point) as REWARDS_EXPENSE_DLRS_PER_ORIG from data
+Calculated Node: REWARDS_EXPENSE_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.1.7.1, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.1.7, MDR_DLRS_PER_ORIG 
+Calculated Node: MDR_DLRS_PER_ORIG is NOT in the data
+Calculated Node: MDR_DLRS_PER_ORIG  has formula: select *, MDR * Sales_DLRS_per_ORIG * On_Spend_PCT_per_ORIG as MDR_DLRS_PER_ORIG from data
+Calculated Node: MDR_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.1.6, SALES_DLRS_PER_ORIG 
+Calculated Node: SALES_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.2.1.5, INTERCHANGE_OFF_SPEND 
+Calculated Node: INTERCHANGE_OFF_SPEND is NOT in the data
+Calculated Node: INTERCHANGE_OFF_SPEND  has formula: select *, case
+when Interchange_Relief_Flag = 1 then 1 - On_Spend_PCT_per_ORIG
+else 1
+END as INTERCHANGE_OFF_SPEND from data
+Calculated Node: INTERCHANGE_OFF_SPEND has been added to data
+
+LOOKING AT: 1.1.3.3.1.2.1, INTERCHANGE_INCOME 
+Calculated Node: INTERCHANGE_INCOME is NOT in the data
+Calculated Node: INTERCHANGE_INCOME  has formula: select *, (Pct_of_Sales_World * Net_Interchange_World + Pct_of_Sales_Non_World * Net_Interchange_Non_World) * Sales_DLRS_per_ORIG * Interchange_off_spend + MDR_DLRS_per_ORIG as INTERCHANGE_INCOME from data
+Calculated Node: INTERCHANGE_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1.2, NET_NON_INTEREST_INCOME 
+Calculated Node: NET_NON_INTEREST_INCOME is NOT in the data
+Calculated Node: NET_NON_INTEREST_INCOME  has formula: select *, interchange_income + Rewards_Expense_DLRS_per_ORIG + Spend_Rev_Share_Partner + Bonus_Revenue_Sharing + Fee_Income as NET_NON_INTEREST_INCOME from data
+Calculated Node: NET_NON_INTEREST_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.2, BT_FEE_INCOME_DLRS_PER_ORIG 
+Calculated Node: BT_FEE_INCOME_DLRS_PER_ORIG is NOT in the data
+Calculated Node: BT_FEE_INCOME_DLRS_PER_ORIG  has formula: select *, Active_Accounts_PCT_per_ORIG * BT_Fee_DLRS_per_ACTV as BT_FEE_INCOME_DLRS_PER_ORIG from data
+Calculated Node: BT_FEE_INCOME_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.3.2, COF_RATE_PCT_PER_ORIG 
+Calculated Node: COF_RATE_PCT_PER_ORIG is NOT in the data
+Calculated Node: COF_RATE_PCT_PER_ORIG  has formula: select *, Revolver_Funding_Curve_Rate * Revolve_Rate_PCT_per_ORIG + Transactor_0pct_New_Rate * (1 - Revolve_Rate_PCT_per_ORIG) as COF_RATE_PCT_PER_ORIG from data
+Calculated Node: COF_RATE_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.3.1, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.3, NET_COST_OF_FUNDS_DLRS_PER_ORIG 
+Calculated Node: NET_COST_OF_FUNDS_DLRS_PER_ORIG is NOT in the data
+Calculated Node: NET_COST_OF_FUNDS_DLRS_PER_ORIG  has formula: select *, (-1) * (OS_DLRS_per_ORIG * COF_Rate_PCT_per_ORIG ) / 12 as NET_COST_OF_FUNDS_DLRS_PER_ORIG from data
+Calculated Node: NET_COST_OF_FUNDS_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.2.3, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.2, CHARGE_OFF_REVERSALS 
+Calculated Node: CHARGE_OFF_REVERSALS is NOT in the data
+Calculated Node: CHARGE_OFF_REVERSALS  has formula: select *, (-1) * (OS_DLRS_per_ORIG * Calc_Ncl_Dollar_Rate_PCT_per_OR * reversal_dollar_rate) / 12 as CHARGE_OFF_REVERSALS from data
+Calculated Node: CHARGE_OFF_REVERSALS has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.12, PENALTY_APR 
+Calculated Node: PENALTY_APR is NOT in the data
+Calculated Node: PENALTY_APR  has formula: select *, Penalty_Spread + Prime_Assets_Only_Rate as PENALTY_APR from data
+Calculated Node: PENALTY_APR has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.10, BT_APR_PCT_PER_ORIG 
+Calculated Node: BT_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: BT_APR_PCT_PER_ORIG  has formula: select *, CASE
+WHEN MOB <= INTRO_DURATION_BT THEN Intro_Rate_on_Acq_BT
+ELSE GOTO_SPREAD + PRIME_ASSETS_ONLY_RATE 
+END as BT_APR_PCT_PER_ORIG from data
+Calculated Node: BT_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.9, PURCHASE_BAL_PCT_PER_ORIG 
+Calculated Node: PURCHASE_BAL_PCT_PER_ORIG is NOT in the data
+Calculated Node: PURCHASE_BAL_PCT_PER_ORIG  has formula: select *, 1 -  ( Sac_Bal_PCT_per_ORIG + Bt_Bal_PCT_per_ORIG + Cash_Bal_PCT_per_ORIG + Chk_Bal_PCT_per_ORIG + Penalty_Bal_PCT_per_ORIG ) as PURCHASE_BAL_PCT_PER_ORIG from data
+Calculated Node: PURCHASE_BAL_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.8, CHECK_APR_PCT_PER_ORIG 
+Calculated Node: CHECK_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: CHECK_APR_PCT_PER_ORIG  has formula: select *, case when Check_Spread = 0 then 0 else Prime_Assets_Only_Rate + Check_Spread end as CHECK_APR_PCT_PER_ORIG from data
+Calculated Node: CHECK_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.7, CASH_APR_PCT_PER_ORIG 
+Calculated Node: CASH_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: CASH_APR_PCT_PER_ORIG  has formula: select *, Prime_Assets_Only_Rate + Cash_Spread as CASH_APR_PCT_PER_ORIG from data
+Calculated Node: CASH_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.6.1, PURCHASE_APR_PCT_PER_ORIG 
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG  has formula: select *, CASE WHEN  MOB<= Intro_Duration_Purchases THEN Intro_Rate_on_Purchase ELSE (Goto_Spread + Prime_Assets_Only_Rate ) END as PURCHASE_APR_PCT_PER_ORIG from data
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.6, SAC_APR_PCT_PER_ORIG 
+Calculated Node: SAC_APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: SAC_APR_PCT_PER_ORIG  has formula: select *, CASE WHEN MOB<= (SAC_Duration + 1) THEN 0 ELSE Purchase_Apr_PCT_per_ORIG END as SAC_APR_PCT_PER_ORIG from data
+Calculated Node: SAC_APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2.5, PURCHASE_APR_PCT_PER_ORIG 
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3.2, APR_PCT_PER_ORIG 
+Calculated Node: APR_PCT_PER_ORIG is NOT in the data
+Calculated Node: APR_PCT_PER_ORIG  has formula: select *, ( Purchase_Apr_PCT_per_ORIG * Purchase_Bal_PCT_per_ORIG + SAC_APR_PCT_per_ORIG * Sac_Bal_PCT_per_ORIG + BT_APR_Pct_per_ORIG * Bt_Bal_PCT_per_ORIG + Cash_APR_Pct_per_ORIG * Cash_Bal_PCT_per_ORIG + Check_APR_Pct_per_ORIG * Chk_Bal_PCT_per_ORIG + Penalty_APR * Penalty_Bal_PCT_per_ORIG ) as APR_PCT_PER_ORIG from data
+Calculated Node: APR_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.3, YIELD_PCT_PER_ORIG 
+Calculated Node: YIELD_PCT_PER_ORIG is NOT in the data
+Calculated Node: YIELD_PCT_PER_ORIG  has formula: select *, APR_PCT_per_ORIG*Revolve_Rate_PCT_per_ORIG as YIELD_PCT_PER_ORIG from data
+Calculated Node: YIELD_PCT_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.2, PURCHASE_APR_PCT_PER_ORIG 
+Calculated Node: PURCHASE_APR_PCT_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.1.1, OS_DLRS_PER_ORIG 
+Calculated Node: OS_DLRS_PER_ORIG is already in the data
+
+LOOKING AT: 1.1.3.3.1.1.1.1, GROSS_FINANCE_CHARGE_YIELD 
+Calculated Node: GROSS_FINANCE_CHARGE_YIELD is NOT in the data
+Calculated Node: GROSS_FINANCE_CHARGE_YIELD  has formula: select *, (Yield_PCT_per_ORIG  * OS_DLRS_per_ORIG) / 12 as GROSS_FINANCE_CHARGE_YIELD from data
+Calculated Node: GROSS_FINANCE_CHARGE_YIELD has been added to data
+
+LOOKING AT: 1.1.3.3.1.1.1, NET_INTEREST_MARGIN 
+Calculated Node: NET_INTEREST_MARGIN is NOT in the data
+Calculated Node: NET_INTEREST_MARGIN  has formula: select *, Gross_Finance_Charge_YIELD + Charge_off_Reversals + Net_Cost_of_Funds_DLRS_per_ORIG as NET_INTEREST_MARGIN from data
+Calculated Node: NET_INTEREST_MARGIN has been added to data
+
+LOOKING AT: 1.1.3.3.1.1, NET_INTEREST_INCOME 
+Calculated Node: NET_INTEREST_INCOME is NOT in the data
+Calculated Node: NET_INTEREST_INCOME  has formula: select *, net_interest_margin + BT_Fee_Income_DLRS_per_ORIG as NET_INTEREST_INCOME from data
+Calculated Node: NET_INTEREST_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3.1, TOTAL_INCOME 
+Calculated Node: TOTAL_INCOME is NOT in the data
+Calculated Node: TOTAL_INCOME  has formula: select *, Net_interest_income + net_non_interest_income as TOTAL_INCOME from data
+Calculated Node: TOTAL_INCOME has been added to data
+
+LOOKING AT: 1.1.3.3, PBT_DLRS_PER_ORIG 
+Calculated Node: PBT_DLRS_PER_ORIG is NOT in the data
+Calculated Node: PBT_DLRS_PER_ORIG  has formula: select *, Total_Income + total_risk + total_opex as PBT_DLRS_PER_ORIG from data
+Calculated Node: PBT_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1.3.1, PROFIT_SHARE 
+Calculated Node: PROFIT_SHARE is NOT in the data
+Calculated Node: PROFIT_SHARE  has formula: select *, nan as PROFIT_SHARE from data
+Looking at Special Case: PROFIT SHARE
+Calculated Node: PROFIT_SHARE has been added to data
+
+LOOKING AT: 1.1.3, PAT_DLRS_PER_ORIG 
+Calculated Node: PAT_DLRS_PER_ORIG is NOT in the data
+Calculated Node: PAT_DLRS_PER_ORIG  has formula: select *, (PBT_DLRS_per_ORIG + ((-1) * profit_share) ) * (1- Tax_Rate) as PAT_DLRS_PER_ORIG from data
+Calculated Node: PAT_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1.1, PV_OF_PAT_DLRS_PER_ORIG 
+Calculated Node: PV_OF_PAT_DLRS_PER_ORIG is NOT in the data
+Calculated Node: PV_OF_PAT_DLRS_PER_ORIG  has formula: select *, PAT_DLRS_per_ORIG / power(( 1+ Cost_of_Equity / 12), MOB) as PV_OF_PAT_DLRS_PER_ORIG from data
+Calculated Node: PV_OF_PAT_DLRS_PER_ORIG has been added to data
+
+LOOKING AT: 1, EV_DLRS_PER_ORIG 
+Calculated Node: EV_DLRS_PER_ORIG is NOT in the data
+Calculated Node: EV_DLRS_PER_ORIG  has formula: select *, PV_of_PAT_DLRS_per_ORIG + Discounted_EC_DLRS_per_ORIG as EV_DLRS_PER_ORIG from data
+Calculated Node: EV_DLRS_PER_ORIG has been added to data
+
